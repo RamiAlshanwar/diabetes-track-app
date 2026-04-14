@@ -20,6 +20,7 @@ type LoginResponse = {
 const Login = () => {
   const { setAuthData } = useAuth();
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [form, setForm] = useState({
     email: "",
@@ -37,6 +38,7 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage("");
 
     try {
       const { data } = await login({
@@ -44,49 +46,61 @@ const Login = () => {
       });
 
       if (!data) {
-        alert("No data returned");
         return;
       }
 
       setAuthData(data.login.token, data.login.user);
-      alert("Logged in successfully ✅");
       navigate("/dashboard");
     } catch (err: unknown) {
       if (err instanceof Error) {
-        alert(err.message);
+        setErrorMessage(err.message);
       } else {
-        alert("Something went wrong");
+        setErrorMessage("Something went wrong");
       }
     }
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Login</h2>
+    <div className="app-page app-page--centered">
+      <div className="app-card app-card--narrow auth-card">
+        <h2 className="app-title">Login</h2>
+        <p className="app-subtitle">Sign in to manage your glucose readings.</p>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
-        />
-        <br />
+        {errorMessage && (
+          <p className="app-message app-message--error">{errorMessage}</p>
+        )}
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleChange}
-        />
-        <br />
+        <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={handleChange}
+            className="form-field"
+          />
 
-        <button type="submit">Login</button>
-      </form>
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+            className="form-field"
+          />
 
-      <p>
-        Don&apos;t have an account? <Link to="/register">Register</Link>
-      </p>
+          <button type="submit" className="form-button">
+            Login
+          </button>
+        </form>
+
+        <p className="auth-footer">
+          Don&apos;t have an account?{" "}
+          <Link to="/register" className="app-link">
+            Register
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };

@@ -1,0 +1,82 @@
+.readings-header-card {
+  margin-bottom: 20px;
+}
+
+.readings-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.reading-card {
+  margin-bottom: 16px;
+  padding: 18px;
+  border: 1px solid #374151;
+  border-radius: 16px;
+  background-color: #1f2937;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.22);
+}
+
+.reading-value {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+.reading-meta {
+  margin: 0 0 8px;
+  color: #d1d5db;
+}
+
+.reading-note {
+  margin: 0 0 14px;
+  color: #d1d5db;
+}
+
+.readings-empty {
+  color: #d1d5db;
+  margin: 0;
+}
+
+.reading-button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.reading-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.reading-button--edit {
+  margin-right: 8px;
+  background-color: #2563eb;
+}
+
+.reading-button--delete {
+  background-color: #dc2626;
+}
+
+.reading-button--cancel {
+  background-color: #4b5563;
+}
+
+.reading-confirm-box {
+  margin-top: 12px;
+  padding: 12px;
+  background-color: #2b2115;
+  border: 1px solid #7c5a19;
+  border-radius: 10px;
+}
+
+.reading-confirm-text {
+  margin: 0 0 10px;
+  color: #fde68a;
+}
+
+.reading-confirm-button {
+  margin-right: 8px;
+}

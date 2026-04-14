@@ -2,6 +2,12 @@ import bcrypt from "bcryptjs";
 import User from "../models/User";
 import generateToken from "../utils/generateToken";
 import jwt from "jsonwebtoken";
+import GlucoseReading from "../models/GlucoseReading";
+import {
+  formatReadingTime,
+  getGlucoseStatus,
+  validateGlucoseValue,
+} from "../utils/glucose";
 
 const resolvers = {
   Query: {
@@ -17,7 +23,10 @@ const resolvers = {
         const cleanToken = context.token.replace("Bearer ", "");
 
         // verify token
-        const decoded = jwt.verify(cleanToken, process.env.JWT_SECRET as string) as {
+        const decoded = jwt.verify(
+          cleanToken,
+          process.env.JWT_SECRET as string,
+        ) as {
           userId: string;
         };
 
@@ -28,6 +37,50 @@ const resolvers = {
       } catch (error) {
         return null;
       }
+    },
+
+    myReadings: async (
+      _: unknown,
+      __: unknown,
+      context: { token: string; userId: string | null },
+    ) => {
+      if (!context.userId) {
+        throw new Error("Unauthorized");
+      }
+
+      return await GlucoseReading.find({ user: context.userId })
+        .populate("user")
+        .sort({ readingTime: -1 });
+    },
+
+    reading: async (
+      _: unknown,
+      args: { id: string },
+      context: { token: string; userId: string | null },
+    ) => {
+      if (!context.userId) {
+        throw new Error("Unauthorized");
+      }
+
+      const reading = await GlucoseReading.findOne({
+        _id: args.id,
+        user: context.userId,
+      }).populate("user");
+
+      if (!reading) {
+        throw new Error("Reading not found");
+      }
+
+      return reading;
+    },
+  },
+
+  GlucoseReading: {
+    status: (reading: { value: number }) => {
+      return getGlucoseStatus(reading.value);
+    },
+    readingTime: (reading: { readingTime: Date | string }) => {
+      return formatReadingTime(reading.readingTime);
     },
   },
 
@@ -91,6 +144,79 @@ const resolvers = {
 
     logout: () => {
       return "Logged out successfully";
+    },
+
+    addReading: async (
+      _: unknown,
+      args: { value: number; readingTime: string; note?: string },
+      context: { token: string; userId: string | null },
+    ) => {
+      if (!context.userId) {
+        throw new Error("Unauthorized");
+      }
+
+      validateGlucoseValue(args.value);
+
+      const reading = new GlucoseReading({
+        value: args.value,
+        readingTime: new Date(args.readingTime),
+        note: args.note || "",
+        user: context.userId,
+      });
+
+      await reading.save();
+
+      return await reading.populate("user");
+    },
+
+    updateReading: async (
+      _: unknown,
+      args: { id: string; value: number; readingTime: string; note?: string },
+      context: { token: string; userId: string | null },
+    ) => {
+      if (!context.userId) {
+        throw new Error("Unauthorized");
+      }
+
+      validateGlucoseValue(args.value);
+
+      const reading = await GlucoseReading.findOne({
+        _id: args.id,
+        user: context.userId,
+      });
+
+      if (!reading) {
+        throw new Error("Reading not found");
+      }
+
+      reading.value = args.value;
+      reading.readingTime = new Date(args.readingTime);
+      reading.note = args.note || "";
+
+      await reading.save();
+
+      return await reading.populate("user");
+    },
+
+    deleteReading: async (
+      _: unknown,
+      args: { id: string },
+      context: { token: string; userId: string | null },
+    ) => {
+      if (!context.userId) {
+        throw new Error("Unauthorized");
+      }
+
+      const reading = await GlucoseReading.findOneAndDelete({
+        _id: args.id,
+        user: context.userId,
+      });
+
+      if (!reading) {
+        throw new Error("Reading not found");
+      }
+
+      return "Reading deleted successfully";
     },
   },
 };

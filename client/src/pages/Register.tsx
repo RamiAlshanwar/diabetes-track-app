@@ -20,6 +20,7 @@ type RegisterResponse = {
 const Register = () => {
   const { setAuthData } = useAuth();
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [form, setForm] = useState({
     username: "",
@@ -38,6 +39,7 @@ const Register = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage("");
 
     try {
       const { data } = await register({
@@ -45,57 +47,72 @@ const Register = () => {
       });
 
       if (!data) {
-        alert("No data returned");
         return;
       }
 
       setAuthData(data.register.token, data.register.user);
-      alert("Registered successfully ✅");
       navigate("/dashboard");
     } catch (err: unknown) {
       if (err instanceof Error) {
-        alert(err.message);
+        setErrorMessage(err.message);
       } else {
-        alert("Something went wrong");
+        setErrorMessage("Something went wrong");
       }
     }
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Register</h2>
+    <div className="app-page app-page--centered">
+      <div className="app-card app-card--medium auth-card">
+        <h2 className="app-title">Register</h2>
+        <p className="app-subtitle">
+          Create your account to start tracking readings.
+        </p>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          onChange={handleChange}
-        />
-        <br />
+        {errorMessage && (
+          <p className="app-message app-message--error">{errorMessage}</p>
+        )}
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
-        />
-        <br />
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            value={form.username}
+            onChange={handleChange}
+            className="form-field"
+          />
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          onChange={handleChange}
-        />
-        <br />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={handleChange}
+            className="form-field"
+          />
 
-        <button type="submit">Register</button>
-      </form>
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={form.password}
+            onChange={handleChange}
+            className="form-field"
+          />
 
-      <p>
-        Already have an account? <Link to="/login">Login</Link>
-      </p>
+          <button type="submit" className="form-button">
+            Register
+          </button>
+        </form>
+
+        <p className="auth-footer">
+          Already have an account?{" "}
+          <Link to="/login" className="app-link">
+            Login
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };

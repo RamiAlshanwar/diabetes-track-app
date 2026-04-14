@@ -1,0 +1,110 @@
+.app-page {
+  min-height: 100vh;
+  padding: 32px 20px;
+  background-color: #111827;
+  color: #f9fafb;
+}
+
+.app-page--centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.app-shell {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.app-card {
+  width: 100%;
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.app-card--narrow {
+  max-width: 420px;
+}
+
+.app-card--medium {
+  max-width: 440px;
+}
+
+.app-card--form {
+  max-width: 640px;
+}
+
+.app-title {
+  margin: 0 0 8px;
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+.app-subtitle {
+  margin: 0 0 24px;
+  color: #9ca3af;
+}
+
+.app-link {
+  color: #93c5fd;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.app-link-inline {
+  display: inline-block;
+}
+
+.app-link-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.app-message {
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.app-message--error {
+  color: #fecaca;
+  background-color: #3b1418;
+  border: 1px solid #7f1d1d;
+}
+
+.app-message--success {
+  color: #d1fae5;
+  background-color: #064e3b;
+  border: 1px solid #065f46;
+}
+
+.app-loading,
+.app-error-state {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: #111827;
+  color: #f9fafb;
+}
+
+@media (max-width: 640px) {
+  .app-page {
+    padding: 24px 16px;
+  }
+
+  .app-card {
+    padding: 22px;
+  }
+
+  .app-title {
+    font-size: 24px;
+  }
+}
